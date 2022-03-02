@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { dbService, storageService } from "fbase";
 import { 
@@ -14,7 +14,8 @@ import Nweet from "components/Nweet";
 const Home = ({ userObj }) => {
   const [nweet, setNweet] = useState('');
   const [nweets, setNweets] = useState([]);
-  const [attachment, setAttachment] = useState();
+  const [attachment, setAttachment] = useState(null);
+  const fileInput = useRef();
   useEffect(() => {
     const q = query(
       collection(dbService, 'nweets'),
@@ -31,7 +32,7 @@ const Home = ({ userObj }) => {
   const onSubmit = async (event) => {
     event.preventDefault();
     let attachmentUrl = '';
-    if (attachment !== '') {
+    if (attachment) {
       const attachmentRef = ref(storageService, `${userObj.uid}/${uuidv4()}`);
       await uploadString(attachmentRef, attachment, 'data_url');
       attachmentUrl = await getDownloadURL(attachmentRef);
@@ -44,7 +45,7 @@ const Home = ({ userObj }) => {
     };
     await addDoc(collection(dbService, 'nweets'), nweetObj);
     setNweet('');
-    setAttachment('');
+    onClearAttachment();
   };
   const onChange = (event) => {
     const {
@@ -68,6 +69,7 @@ const Home = ({ userObj }) => {
   };
   const onClearAttachment = () => {
     setAttachment(null);
+    fileInput.current.value = null;
   };
 
   return (
@@ -83,6 +85,7 @@ const Home = ({ userObj }) => {
         <input 
           type="file"
           accept="image/*"
+          ref={fileInput}
           onChange={onFileChange}
         />
         <button>Nweet</button>
