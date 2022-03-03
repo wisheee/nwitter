@@ -1,16 +1,46 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { authService } from "fbase";
+import { authService, dbService } from "fbase";
+import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import Nweet from "components/Nweet";
 
-const Profile = () => {
+const Profile = ({ userObj }) => {
   const navigate = useNavigate();
+  const [myNweets, setMyNweets] = useState([]);
   const onLogOutClick = () => {
     authService.signOut();
     navigate('/');
   };
+  const getMyNweets = useCallback(async () => {
+    const q = query(
+      collection(dbService, 'nweets'),
+      where('creatorId', '==', userObj.uid),
+      orderBy('createdAt', 'desc')
+    );
+    const dbMyNweets = await getDocs(q);
+    dbMyNweets.forEach(doc => {
+      const nweet = {
+        id: doc.id,
+        ...doc.data()
+      };
+      setMyNweets(prev => [...prev, nweet]);
+    });
+  }, [userObj.uid]);
+  useEffect(() => {
+    getMyNweets();
+  }, [getMyNweets]);
   return (
     <>
       <button onClick={onLogOutClick}>Log Out</button>
+      <div>
+        {myNweets.map(myNweet => (
+          <Nweet
+            key={myNweet.id}
+            nweetObj={myNweet}
+            isOwner={true}
+          />
+        ))}
+      </div>
     </>
   );
 };
