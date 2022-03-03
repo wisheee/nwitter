@@ -4,9 +4,10 @@ import { authService, dbService } from "fbase";
 import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
 import Nweet from "components/Nweet";
 
-const Profile = ({ userObj }) => {
+const Profile = ({ userObj, refreshUser }) => {
   const navigate = useNavigate();
   const [myNweets, setMyNweets] = useState([]);
+  const [newDisplayName, setNewDisplayName] = useState(userObj.displayName);
   const onLogOutClick = () => {
     authService.signOut();
     navigate('/');
@@ -29,8 +30,31 @@ const Profile = ({ userObj }) => {
   useEffect(() => {
     getMyNweets();
   }, [getMyNweets]);
+  const onChange = (event) => {
+    const {
+      target: { value }
+    } = event;
+    setNewDisplayName(value);
+  };
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    if (userObj.displayName !== newDisplayName) {
+      await userObj.updateProfile({ displayName: newDisplayName });
+      refreshUser();
+    }
+  };
+
   return (
     <>
+      <form onSubmit={onSubmit}>
+        <input 
+          type="text"
+          placeholder="Display name"
+          value={newDisplayName}
+          onChange={onChange}
+        />
+        <button>Update Profile</button>
+      </form>
       <button onClick={onLogOutClick}>Log Out</button>
       <div>
         {myNweets.map(myNweet => (
