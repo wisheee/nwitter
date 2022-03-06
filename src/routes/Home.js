@@ -12,6 +12,7 @@ import NweetFactory from "components/NweetFactory";
 const Home = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
   useEffect(() => {
+    let isMounted = true;
     const q = query(
       collection(dbService, 'nweets'),
       orderBy('createdAt', 'desc')
@@ -21,8 +22,10 @@ const Home = ({ userObj }) => {
         id: doc.id,
         ...doc.data()
       }));
-      setNweets(nweetArray);
+      if (isMounted)
+        setNweets(nweetArray);
     });
+    return () => isMounted = false;
   }, []);
 
   return (
