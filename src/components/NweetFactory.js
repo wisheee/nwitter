@@ -22,6 +22,8 @@ const NweetFactory = ({ userObj }) => {
       creatorId: userObj.uid,
       attachmentUrl
     };
+    if (nweet === '' && attachmentUrl === '')
+      return;
     await addDoc(collection(dbService, 'nweets'), nweetObj);
     setNweet('');
     onClearAttachment();
