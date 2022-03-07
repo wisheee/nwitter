@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import AppRouter from "components/Router";
 import { authService } from "fbase";
 import { updateProfile } from "firebase/auth";
+import styled from "styled-components";
 
 function App() {
   const [init, setInit] = useState(false);
@@ -30,15 +31,29 @@ function App() {
   };
 
   return (
-    <>
+    <RootContainer>
       {init ? <AppRouter 
                 refreshUser={refreshUser} 
                 isLoggedIn={Boolean(userObj)} 
                 userObj={userObj} 
               /> : 'Initializing...'}
-      <footer>&copy; {new Date().getFullYear()} Nwitter</footer>
-    </>
+      <Footer>&copy; {new Date().getFullYear()} Nwitter</Footer>
+    </RootContainer>
   );
 }
+
+const RootContainer = styled.div`
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Footer = styled.footer`
+  margin-top: 2em;
+  font-size: 1.3rem;
+  color: #717883;
+`;
 
 export default App;

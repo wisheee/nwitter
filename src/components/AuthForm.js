@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword
 } from "firebase/auth";
+import styled from "styled-components";
 
 const AuthForm = () => {
   const [email, setEmail] = useState('');
@@ -39,8 +40,8 @@ const AuthForm = () => {
 
   return (
     <>
-      <form onSubmit={onSubmit}>
-        <input 
+      <FormContainer onSubmit={onSubmit}>
+        <Input 
           name="email"
           type="email" 
           placeholder="Email" 
@@ -48,7 +49,7 @@ const AuthForm = () => {
           value={email} 
           onChange={onChange}
         />
-        <input 
+        <Input 
           name="password"
           type="password" 
           placeholder="Password" 
@@ -56,14 +57,61 @@ const AuthForm = () => {
           value={password} 
           onChange={onChange}
         />
-        <button type="submit">{newAccount ? 'Create Account' : 'Sign In'}</button>
+        <Button type="submit" backgroundColor="#04aaff" color="#fff">
+          {newAccount ? 'Create Account' : 'Sign In'}
+        </Button>
         {error}
-      </form>
-      <span onClick={toggleAccount}>
+      </FormContainer>
+      <TextButton onClick={toggleAccount} color="#04aaff">
         {newAccount ? 'Sign In' : 'Create Account'}
-      </span>
+      </TextButton>
     </>
   );
 };
+
+const FormContainer = styled.form`
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+`;
+
+const Input = styled.input`
+  margin-bottom: 0.8rem;
+  padding: 1rem 1.5rem;
+  border-radius: 2rem;
+  border: none;
+`;
+
+const Button = styled.button`
+  height: 4rem;
+  padding: 0 1.4rem;
+  background-color: ${props => props.backgroundColor || '#fff'};
+  color: ${props => props.color || '#000'};
+  border: none;
+  border-radius: 2rem;
+  cursor: pointer;
+  opacity: .8;
+  transition: .3s;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
+
+const TextButton = styled.button`
+  text-decoration: underline;
+  font-size: 1.4rem;
+  border: none;
+  background-color: transparent;
+  color: ${props => props.color || '#000'};
+  cursor: pointer;
+  opacity: .8;
+  transition: .3s;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
 
 export default AuthForm;
