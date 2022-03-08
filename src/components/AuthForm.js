@@ -60,7 +60,7 @@ const AuthForm = () => {
         <Button type="submit" backgroundColor="#04aaff" color="#fff">
           {newAccount ? 'Create Account' : 'Sign In'}
         </Button>
-        {error}
+        <ErrorContainer>{error}</ErrorContainer>
       </FormContainer>
       <TextButton onClick={toggleAccount} color="#04aaff">
         {newAccount ? 'Sign In' : 'Create Account'}
@@ -112,6 +112,13 @@ const TextButton = styled.button`
   &:hover {
     opacity: 1;
   }
+`;
+
+const ErrorContainer = styled.p`
+  padding-top: 1em;
+  font-size: 1.4rem;
+  line-height: 1.2;
+  color: #f44336;
 `;
 
 export default AuthForm;

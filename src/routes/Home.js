@@ -8,6 +8,7 @@ import {
 } from "firebase/firestore";
 import Nweet from "components/Nweet";
 import NweetFactory from "components/NweetFactory";
+import styled from "styled-components";
 
 const Home = ({ userObj }) => {
   const [nweets, setNweets] = useState([]);
@@ -29,7 +30,7 @@ const Home = ({ userObj }) => {
   }, []);
 
   return (
-    <div>
+    <StyledInner>
       <NweetFactory userObj={userObj} />
       <div>
         {nweets.map(nweet => (
@@ -40,7 +41,12 @@ const Home = ({ userObj }) => {
           />
         ))}
       </div>
-    </div>
+    </StyledInner>
   );
 };
+
+const StyledInner = styled.div`
+  width: 50rem;
+`;
+
 export default Home;

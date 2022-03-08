@@ -3,6 +3,9 @@ import { v4 as uuidv4 } from "uuid";
 import { dbService, storageService } from "fbase";
 import { addDoc, collection } from "firebase/firestore";
 import { ref, uploadString, getDownloadURL } from "firebase/storage";
+import styled from "styled-components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faArrowRight, faTimes } from "@fortawesome/free-solid-svg-icons";
 
 const NweetFactory = ({ userObj }) => {
   const [nweet, setNweet] = useState('');
@@ -54,29 +57,130 @@ const NweetFactory = ({ userObj }) => {
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <StyledForm onSubmit={onSubmit}>
+      <InputContainer>
+        <input 
+          value={nweet}
+          onChange={onChange}
+          type="text" 
+          placeholder="What's on your mind?" 
+          maxLength={120} 
+        />
+        <button>
+          <FontAwesomeIcon
+            icon={faArrowRight}
+          />
+        </button>
+      </InputContainer>
+      <StyledLabel htmlFor="attach-file">
+        Add photos
+        <FontAwesomeIcon
+          icon={faPlus}
+        />
+      </StyledLabel>
       <input 
-        value={nweet}
-        onChange={onChange}
-        type="text" 
-        placeholder="What's on your mind?" 
-        maxLength={120} 
-      />
-      <input 
+        id="attach-file"
         type="file"
         accept="image/*"
         ref={fileInput}
         onChange={onFileChange}
       />
-      <button>Nweet</button>
       {attachment && (
-        <div>
-          <img src={attachment} alt="preview" width="50px" height="50px" />
-          <button onClick={onClearAttachment}>Clear</button>
-        </div>
+        <ImageContainer>
+          <figure style={{
+            backgroundImage: `url(${attachment})`
+          }}></figure>
+          <button onClick={onClearAttachment}>
+            Remove
+            <FontAwesomeIcon
+              icon={faTimes}
+            />
+          </button>
+        </ImageContainer>
       )}
-    </form>
+    </StyledForm>
   );
 };
+
+const StyledForm = styled.form`
+  text-align: center;
+`;
+
+const InputContainer = styled.div`
+  position: relative;
+  display: flex;
+  width: 50rem;
+  height: 5rem;
+  border: 1px solid #04aaff;
+  border-radius: 3rem;
+  
+  input {
+    padding-left: 2rem;
+    padding-right: 5rem;
+    width: 100%;
+    border: none;
+    border-radius: 3rem;
+    color: #fff;
+    background-color: transparent;
+    font-size: 1.5rem;
+  }
+
+  button {
+    position: absolute;
+    top: 0;
+    right: -0.1rem;
+    width: 5rem;
+    height: 100%;
+    border: none;
+    border-radius: 50%;
+    color: #fff;
+    background-color: #04aaff;
+    cursor: pointer;
+  }
+`;
+
+const StyledLabel = styled.label`
+  display: inline-block;
+  padding: 1em;
+  font-size: 1.5rem;
+  color: #04aaff;
+  cursor: pointer;
+
+  svg {
+    margin-left: 0.5em;
+  }
+
+  & + input {
+    display: none;
+  }
+`;
+
+const ImageContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: auto;
+  width: 8rem;
+  
+  figure {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    width: 100%;
+    height: 8rem;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  button {
+    border: none;
+    background-color: transparent;
+    color: #04aaff;
+    cursor: pointer;
+
+    svg {
+      margin-left: 0.5em;
+    }
+  }
+`;
 
 export default NweetFactory;
