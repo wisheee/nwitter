@@ -74,7 +74,7 @@ const StyledInner = styled.div`
   width: 50rem;
 `;
 
-const StyledForm = styled.div`
+const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
   padding-bottom: 5rem;
