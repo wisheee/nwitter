@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService, dbService } from "fbase";
-import { collection, getDocs, orderBy, query, where } from "firebase/firestore";
+import { collection, onSnapshot, orderBy, query, where } from "firebase/firestore";
 import Nweet from "components/Nweet";
 import styled from "styled-components";
 
@@ -13,24 +13,21 @@ const Profile = ({ userObj, refreshUser }) => {
     authService.signOut();
     navigate('/');
   };
-  const getMyNweets = useCallback(async () => {
+  useEffect(() => {
     const q = query(
       collection(dbService, 'nweets'),
       where('creatorId', '==', userObj.uid),
       orderBy('createdAt', 'desc')
     );
-    const dbMyNweets = await getDocs(q);
-    dbMyNweets.forEach(doc => {
-      const nweet = {
+    onSnapshot(q, snapshot => {
+      const nweetArray = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
-      };
-      setMyNweets(prev => [...prev, nweet]);
+      }))
+      setMyNweets(nweetArray);
     });
+
   }, [userObj.uid]);
-  useEffect(() => {
-    getMyNweets();
-  }, [getMyNweets]);
   const onChange = (event) => {
     const {
       target: { value }
