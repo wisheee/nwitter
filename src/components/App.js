@@ -12,7 +12,7 @@ function App() {
       if (user) {
         setUserObj({
           uid: user.uid,
-          displayName: user.displayName,
+          displayName: user.displayName ? user.displayName : user.email,
           updateProfile: (args) => updateProfile(authService.currentUser, args)
         });
       } else {
