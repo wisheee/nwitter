@@ -14,6 +14,7 @@ const Profile = ({ userObj, refreshUser }) => {
     navigate('/');
   };
   useEffect(() => {
+    let isMounted = true;
     const q = query(
       collection(dbService, 'nweets'),
       where('creatorId', '==', userObj.uid),
@@ -24,9 +25,10 @@ const Profile = ({ userObj, refreshUser }) => {
         id: doc.id,
         ...doc.data()
       }))
-      setMyNweets(nweetArray);
+      if (isMounted)
+        setMyNweets(nweetArray);
     });
-
+    return () => isMounted = false;
   }, [userObj.uid]);
   const onChange = (event) => {
     const {
